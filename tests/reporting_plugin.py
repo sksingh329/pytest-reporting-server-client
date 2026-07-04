@@ -57,6 +57,9 @@ def pytest_runtest_logreport(report):
 
 
 def pytest_sessionfinish(session, exitstatus):
+    if os.environ.get("REPORT_ENABLED", "false").strip().lower() not in ("true", "1", "yes"):
+        return
+
     url = os.environ.get("REPORT_SERVER_URL")
     project_id = os.environ.get("REPORT_PROJECT_ID")
     token = os.environ.get("REPORT_SERVICE_TOKEN")
