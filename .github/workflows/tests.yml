@@ -1,0 +1,38 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    env:
+      BEARER_TOKEN: ${{ secrets.BEARER_TOKEN }}
+      REPORT_ENABLED: ${{ secrets.REPORT_ENABLED }}
+      REPORT_SERVER_URL: ${{ secrets.REPORT_SERVER_URL }}
+      REPORT_PROJECT_ID: ${{ secrets.REPORT_PROJECT_ID }}
+      REPORT_SERVICE_TOKEN: ${{ secrets.REPORT_SERVICE_TOKEN }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run pytest
+        run: pytest
+
+      - name: Upload HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: reports/
