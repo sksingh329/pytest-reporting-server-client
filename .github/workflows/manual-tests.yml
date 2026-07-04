@@ -1,0 +1,58 @@
+name: Manual Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      api_env:
+        description: "Environment to run against (dev / staging / prod)"
+        required: false
+        default: "dev"
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+      marker:
+        description: "Only run tests matching this pytest marker (leave blank for all)"
+        required: false
+        default: ""
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    env:
+      BEARER_TOKEN: ${{ secrets.BEARER_TOKEN }}
+      REPORT_ENABLED: ${{ secrets.REPORT_ENABLED }}
+      REPORT_SERVER_URL: ${{ secrets.REPORT_SERVER_URL }}
+      REPORT_PROJECT_ID: ${{ secrets.REPORT_PROJECT_ID }}
+      REPORT_SERVICE_TOKEN: ${{ secrets.REPORT_SERVICE_TOKEN }}
+      API_ENV_INPUT: ${{ inputs.api_env }}
+      MARKER_INPUT: ${{ inputs.marker }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run pytest
+        run: |
+          MARKER_ARGS=()
+          if [ -n "$MARKER_INPUT" ]; then
+            MARKER_ARGS=(-m "$MARKER_INPUT")
+          fi
+          pytest --api-env="$API_ENV_INPUT" "${MARKER_ARGS[@]}"
+
+      - name: Upload HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: reports/
