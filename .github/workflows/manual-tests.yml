@@ -23,6 +23,7 @@ jobs:
 
     env:
       BEARER_TOKEN: ${{ secrets.BEARER_TOKEN }}
+      BEARER_BLOCKED_TOKEN: ${{ secrets.BEARER_BLOCKED_TOKEN }}
       REPORT_ENABLED: ${{ secrets.REPORT_ENABLED }}
       REPORT_SERVER_URL: ${{ secrets.REPORT_SERVER_URL }}
       REPORT_PROJECT_ID: ${{ secrets.REPORT_PROJECT_ID }}
