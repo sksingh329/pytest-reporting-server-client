@@ -48,6 +48,24 @@ def api_client(api_config):
 
 
 @pytest.fixture(scope="session")
+def blocked_api_client(api_config):
+    """
+    An api_client authenticated with BEARER_BLOCKED_TOKEN (gorest.in's
+    'blocked-token'), used to assert write operations are rejected with 403.
+    """
+    token = get_env("BEARER_BLOCKED_TOKEN", required=True)
+    client = APIClient(
+        base_url=api_config["base_url"],
+        auth=BearerAuth(token),
+        timeout=api_config.get("timeout", 30),
+        verify_ssl=api_config.get("verify_ssl", True),
+        default_headers=api_config.get("headers"),
+    )
+    yield client
+    client.close()
+
+
+@pytest.fixture(scope="session")
 def base_url(api_config):
     """Convenience fixture — exposes the resolved base URL as a plain string."""
     return api_config["base_url"]

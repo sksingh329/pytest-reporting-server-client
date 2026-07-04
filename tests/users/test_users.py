@@ -30,6 +30,10 @@ class TestUsers:
             .key_equals("gender", new_user_payload["gender"])
 
 
+    def test_create_user_blocked_token(self, blocked_api_client, new_user_payload):
+        response = blocked_api_client.post(USERS_PATH, json=new_user_payload)
+        assert_that(response).status_is(403)
+
     def test_create_user_duplicate_email(self, api_client, new_user_payload, created_user):
         duplicate_payload = {**new_user_payload, "email": created_user["email"]}
 
