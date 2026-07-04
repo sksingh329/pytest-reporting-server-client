@@ -8,6 +8,8 @@ token from the .env file so every authenticated test gets it for free.
 import random
 
 import pytest
+
+pytest_plugins = ["tests.reporting_plugin"]
 from pytest_api_core.auth.auth_handlers import BearerAuth
 from pytest_api_core.client.api_client import APIClient
 from pytest_api_core.config.env_loader import get_env
@@ -62,4 +64,16 @@ def new_user_payload():
         "gender": "male",
         "status": "active",
     }
+
+
+@pytest.fixture
+def created_user(api_client, new_user_payload):
+    """Creates a user via the API and returns its JSON body for tests to consume.
+
+    Deletes the user during teardown; tolerates tests that already deleted it.
+    """
+    response = api_client.post("/public/v2/users", json=new_user_payload)
+    user = response.json()
+    yield user
+    api_client.delete(f"/public/v2/users/{user['id']}")
 

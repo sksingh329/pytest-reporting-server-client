@@ -4,3 +4,4 @@ pytest-api-core[dotenv]==1.0.3
 # Optional dev dependencies
 pytest>=7.0
 faker==40.28.1
+requests>=2.32

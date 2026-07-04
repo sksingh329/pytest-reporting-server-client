@@ -80,6 +80,9 @@ The HTML report is written to `reports/dev/report_<timestamp>.html`.
 | `API_BASE_URL` | Override the base URL from settings    |
 | `API_ENV`      | Override `api_env` from `pytest.ini`   |
 | `API_TIMEOUT`  | Request timeout in seconds             |
+| `REPORT_SERVER_URL`     | Base URL of the Test Reporting Server (e.g. `https://api.dev.report.subodhsingh.in`). If unset, remote reporting is skipped. |
+| `REPORT_PROJECT_ID`     | Project ID on the reporting server to report test results into |
+| `REPORT_SERVICE_TOKEN`  | Service token for authenticating with the reporting server      |
 
 ### Markers
 
